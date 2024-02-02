@@ -26,7 +26,7 @@ public class MongoDbDatabase : IDataBaseAdapter
             Airspeed = document["airspeed"].AsInt32,
             AircraftIdentification = document["aircraft_identification"].AsString,
             AircraftType = document["aircraft_type"].AsString,
-            ArrivalAirport = document["arrival_airport"].ToUniversalTime(),
+            ArrivalAirport = document["arrival_airport"].AsString,
             DepartingAirport = document["departing_airport"].AsString,
             FlightType = document["flight_type"].AsString,
             DepartureTime = document["departure_time"].AsBsonDateTime.ToUniversalTime(),

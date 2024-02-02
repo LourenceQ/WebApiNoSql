@@ -20,7 +20,7 @@ public class FlightPlan
     public string? AircraftType { get; set; }
 
     [JsonPropertyName("arrival_airport")]
-    public DateTime? ArrivalAirport { get; set; }
+    public string? ArrivalAirport { get; set; }
 
     [JsonPropertyName("departing_airport")]
     public string? DepartingAirport { get; set; }

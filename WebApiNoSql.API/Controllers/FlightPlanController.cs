@@ -80,7 +80,7 @@ public class FlightPlanController(IDataBaseAdapter database) : ControllerBase
     {
         FlightPlan flightPlan = await _database.GetFlightPlansById(flightPlanId);
 
-        return flightPlan == null ? StatusCode(StatusCodes.Status404NotFound) : Ok(flightPlan.ArrivalAirport - flightPlan.DepartureTime);
+        return flightPlan == null ? StatusCode(StatusCodes.Status404NotFound) : Ok(flightPlan.EstimatedArrivalTime - flightPlan.DepartureTime);
     }
 
 
