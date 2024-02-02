@@ -7,7 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("LibraryOpenApiSpecification", new Microsoft.OpenApi.Models.OpenApiInfo()
+    {
+    });
+});
+
 builder.Services.AddCors();
 builder.Services.AddScoped<IDataBaseAdapter, MongoDbDatabase>();
 
@@ -17,7 +23,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseCors(options =>

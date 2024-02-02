@@ -12,49 +12,75 @@ public class FlightPlanController(IDataBaseAdapter database) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetFlightPlanList()
     {
-        throw new NotImplementedException();
+        List<FlightPlan> flightPlanList = await _database.GetAllFlightPlans();
+
+        return flightPlanList.Count != 0 ? Ok(flightPlanList) : NoContent();
     }
 
-    [HttpGet]
+    [HttpGet("{flightPlanId}")]
     public async Task<IActionResult> GetFlightPlanById(string flightPlanId)
     {
-        throw new NotImplementedException();
+        FlightPlan flightPlan = await _database.GetFlightPlansById(flightPlanId);
+
+        return flightPlan.FlightPlanId == flightPlanId ? Ok(flightPlan) : StatusCode(StatusCodes.Status404NotFound);
     }
 
-    [HttpPost]
+    [HttpPost("file")]
     public async Task<IActionResult> FileFlightPlan(FlightPlan flightPlan)
     {
-        throw new NotImplementedException();
+        TransactionResult transactionResult = await _database.FileFlightPlan(flightPlan);
+
+        return transactionResult switch
+        {
+            TransactionResult.Success => Ok(),
+            TransactionResult.BadRequest => StatusCode(StatusCodes.Status400BadRequest),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
-    [HttpPost]
+    [HttpPut]
     public async Task<IActionResult> UpdateFlightPlan(FlightPlan flightPlan)
     {
-        throw new NotImplementedException();
+        TransactionResult updateResult = await _database.UpdateFlightPlan(flightPlan.FlightPlanId, flightPlan);
+
+        return updateResult switch
+        {
+            TransactionResult.Success => Ok(),
+            TransactionResult.NotFound => StatusCode(StatusCodes.Status400BadRequest),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteFlightPlan(FlightPlan flightPlanId)
+    [HttpDelete("{flightPlanId}")]
+    public async Task<IActionResult> DeleteFlightPlan(string flightPlanId)
     {
-        throw new NotImplementedException();
+        bool result = await _database.DeleteFlightPlanById(flightPlanId);
+
+        return result ? Ok() : StatusCode(StatusCodes.Status404NotFound);
     }
 
-    [HttpGet]
+    [HttpGet("airport/departure/{flightPlanId}")]
     public async Task<IActionResult> GetFlightPlanDepartureAirport(string flightPlanId)
     {
-        throw new NotImplementedException();
+        FlightPlan flightPlan = await _database.GetFlightPlansById(flightPlanId);
+
+        return flightPlan == null ? StatusCode(StatusCodes.Status404NotFound) : Ok(flightPlan.DepartingAirport);
     }
 
-    [HttpGet]
+    [HttpGet("route/{flightPlanId}")]
     public async Task<IActionResult> GetFlightPlanRoutes(string flightPlanId)
     {
-        throw new NotImplementedException();
+        FlightPlan flightPlan = await _database.GetFlightPlansById(flightPlanId);
+
+        return flightPlan == null ? StatusCode(StatusCodes.Status404NotFound) : Ok(flightPlan.Route);
     }
 
-    [HttpGet]
+    [HttpGet("time/enroute/{flightPlanId}")]
     public async Task<IActionResult> GetFlightPlanTimeEnroute(string flightPlanId)
     {
-        throw new NotImplementedException();
+        FlightPlan flightPlan = await _database.GetFlightPlansById(flightPlanId);
+
+        return flightPlan == null ? StatusCode(StatusCodes.Status404NotFound) : Ok(flightPlan.ArrivalAirport - flightPlan.DepartureTime);
     }
 
 
