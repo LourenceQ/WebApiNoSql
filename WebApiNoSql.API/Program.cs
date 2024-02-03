@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using WebApiNoSql.API.Authentication;
 using WebApiNoSql.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddCors();
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 builder.Services.AddScoped<IDataBaseAdapter, MongoDbDatabase>();
 
 var app = builder.Build();
@@ -35,7 +39,11 @@ app.UseCors(options =>
     options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 });
 
+app.UseHsts();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
