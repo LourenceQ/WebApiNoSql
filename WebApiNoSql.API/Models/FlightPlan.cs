@@ -29,10 +29,10 @@ public class FlightPlan
     public string? FlightType { get; set; }
 
     [JsonPropertyName("departure_time")]
-    public DepartureTime? DepartureTime { get; set; }
+    public DateTime DepartureTime { get; set; }
 
     [JsonPropertyName("estimated_arrival_time")]
-    public EstimatedArrivalTime? EstimatedArrivalTime { get; set; }
+    public DateTime EstimatedArrivalTime { get; set; }
 
     [JsonPropertyName("route")]
     public string? Route { get; set; }
@@ -48,20 +48,4 @@ public class FlightPlan
 
     [JsonPropertyName("number_onboard")]
     public int NumberOnboard { get; set; }
-
 }
-
-public class DepartureTime
-{
-    [JsonPropertyName("date")]
-    public DateTime? Date { get; set; }
-}
-
-public class EstimatedArrivalTime
-{
-    [JsonPropertyName("date")]
-    public DateTime? Date { get; set; }
-}
-
-
-
