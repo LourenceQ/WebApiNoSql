@@ -111,6 +111,7 @@ public class MongoDbDatabase : IDataBaseAdapter
 
     public async Task<bool> UpdateFlightPlan(string flightPlanId, FlightPlan flightPlan)
     {
+
         IMongoCollection<BsonDocument> collection = GetCollection("pluralsight", "flight_plans");
         FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("pluralsight", flightPlanId);
 
