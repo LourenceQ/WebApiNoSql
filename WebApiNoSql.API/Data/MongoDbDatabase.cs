@@ -56,23 +56,90 @@ public class MongoDbDatabase : IDataBaseAdapter
         return flightPlanList;
     }
 
-    public Task<List<FlightPlan>> GetFlightPlansById(string flightPlanId)
+    public async Task<FlightPlan> GetFlightPlansById(string flightPlanId)
     {
-        throw new NotImplementedException();
+        IMongoCollection<BsonDocument> collection = GetCollection("pluralsight", "flight_plans");
+        IAsyncCursor<BsonDocument> flightPlanCursors = await collection.FindAsync(
+            Builders<BsonDocument>.Filter.Eq("flight_plan_id", flightPlanId));
+
+        BsonDocument document = flightPlanCursors.FirstOrDefault();
+
+        FlightPlan flightPlan = ConvertBsonToFlightPlan(document);
+
+        if (flightPlan == null)
+        {
+            return new FlightPlan();
+        }
+
+        return flightPlan;
     }
 
-    public Task<bool> FileFlightPlan(FlightPlan flightPlan)
+    public async Task<bool> FileFlightPlan(FlightPlan flightPlan)
     {
-        throw new NotImplementedException();
+        IMongoCollection<BsonDocument> collection = GetCollection("pluralsight", "flight_plans");
+
+        var document = new BsonDocument
+        {
+            {"flight_plan_id", Guid. NewGuid().ToString("N") },
+            {"altitude", flightPlan.Altitude },
+            {"airspeed", flightPlan.Airspeed },
+            {"aircraft_identification", flightPlan.AircraftIdentification },
+            {"aircraft_type", flightPlan.AircraftType },
+            {"arrival_airport", flightPlan.ArrivalAirport },
+            {"flight_type", flightPlan.FlightType},
+            {"departing_airport", flightPlan.DepartingAirport },
+            {"departure_time", flightPlan.DepartureTime },
+            {"estimated_arrival_time", flightPlan.EstimatedArrivalTime }, {"route", flightPlan. Route },
+            {"remarks", flightPlan.Remarks },
+            {"fuel_hours", flightPlan.FuelHours },
+            {"fuel_minutes", flightPlan.FuelMinutes },
+            {"number_onboard", flightPlan.NumberOnboard }
+        };
+
+        try
+        {
+            await collection.InsertOneAsync(document);
+        }
+        catch
+        {
+
+            return false;
+        }
+
+        return true;
     }
 
-    public Task<bool> UpdateFlightPlan(string flightPlanId, FlightPlan flightPlan)
+    public async Task<bool> UpdateFlightPlan(string flightPlanId, FlightPlan flightPlan)
     {
-        throw new NotImplementedException();
+        IMongoCollection<BsonDocument> collection = GetCollection("pluralsight", "flight_plans");
+        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("pluralsight", flightPlanId);
+
+        UpdateDefinition<BsonDocument> update = Builders<BsonDocument>.Update
+            .Set("altitude", flightPlan.Altitude)
+            .Set("airspeed", flightPlan.Airspeed)
+            .Set("aircraft_identification", flightPlan.AircraftIdentification)
+            .Set("aircraft_type", flightPlan.AircraftType)
+            .Set("arrival_airport", flightPlan.ArrivalAirport)
+            .Set("flight_type", flightPlan.FlightType)
+            .Set("departing_airport", flightPlan.DepartingAirport)
+            .Set("departure_time", flightPlan.DepartureTime)
+            .Set("estimated_arrival_time", flightPlan.EstimatedArrivalTime)
+            .Set("route", flightPlan.Route)
+            .Set("remarks", flightPlan.Remarks)
+            .Set("fuel_hours", flightPlan.FuelHours)
+            .Set("fuel_minutes", flightPlan.FuelMinutes)
+            .Set("numberOnBoard", flightPlan.NumberOnboard);
+
+        UpdateResult result = await collection.UpdateOneAsync(filter, update);
+
+        return result.ModifiedCount > 0;
     }
 
-    public Task<bool> DeleteFlightPlanById(string flightPlanId)
+    public async Task<bool> DeleteFlightPlanById(string flightPlanId)
     {
-        throw new NotImplementedException();
+        IMongoCollection<BsonDocument> collection = GetCollection("pluralsight", "flight_plans");
+        DeleteResult result = await collection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("pluralsight", flightPlanId));
+
+        return result.DeletedCount > 0;
     }
 }
