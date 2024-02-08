@@ -37,6 +37,11 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             return AuthenticateResult.Fail("Error Ocurred.Authorization failed.");
         }
 
+        if (user == null)
+        {
+            return AuthenticateResult.Fail("Invalid Credentials");
+        }
+
         Claim[] claims =
         [
             new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -48,8 +53,6 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         AuthenticationTicket ticket = new(principal, Scheme.Name);
 
 
-        return user == null
-            ? AuthenticateResult.Fail("Invalid Credentials")
-            : AuthenticateResult.Success(ticket);
+        return AuthenticateResult.Success(ticket);
     }
 }

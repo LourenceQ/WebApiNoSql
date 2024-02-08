@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.OpenApi.Models;
 using WebApiNoSql.API.Authentication;
 using WebApiNoSql.API.Data;
 
@@ -13,7 +14,33 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("LibraryOpenApiSpecification", new Microsoft.OpenApi.Models.OpenApiInfo()
     {
+        Title = "Flight Plan API",
+        Version = "v1",
+        Description = "Web Api for Flight Plan"
     });
+    options.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic",
+        In = ParameterLocation.Header,
+        Description = "Basic authorization header using Bearer shceme"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "basicAuth"
+                }
+            },
+            new string[] {}
+        }
+    });
+    options.EnableAnnotations();
 });
 
 builder.Services.AddCors();
