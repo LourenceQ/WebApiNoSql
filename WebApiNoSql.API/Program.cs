@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using WebApiNoSql.API.Authentication;
 using WebApiNoSql.API.Data;
 
@@ -41,6 +42,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
     options.EnableAnnotations();
+
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
 });
 
 builder.Services.AddCors();
